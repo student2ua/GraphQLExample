@@ -23,7 +23,7 @@ open class HumanImporter : CSVDataImporter(), KoinComponent {
             try {
                 val human = Human(
                         id = row[0].toInt(),
-                        inn = toNotNull(row[1]),
+                        inn = row[1].toNotNULL(),
                         lastName = row[2],
                         firsName = row[4],
                         middleName = row[5],
@@ -31,17 +31,17 @@ open class HumanImporter : CSVDataImporter(), KoinComponent {
                         birthday = LocalDate.parse(row[11].trim('"'), DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00")), //"2004-08-14 00:00:00"
                         brothersCount = row[14].toInt(),
                         childrenCount = row[15].toInt(),
-                        sportText = toNotNull(row[16]),
-                        amateurText = toNotNull(row[17]),
-                        phone = toNotNull(row[25]),
+                        sportText = row[16].toNotNULL(),
+                        amateurText = row[17].toNotNULL(),
+                        phone = row[25].toNotNULL(),
                         needHospice = row[27].toBoolean(),
                         isUkrainian = !row[29].toBoolean(),
-                        email = toNotNull(row[36]),
-                        remark = toNotNull(row[38]),
+                        email = row[36].toNotNULL(),
+                        remark = row[38].toNotNULL(),
                         isHumanDismissed = row[39].toBoolean(),
-                        personCodeU = toNotNull(row[40]),
+                        personCodeU = row[40].toNotNULL(),
                         idPerson = row[41].toIntOrNull(),
-                        email2 = toNotNull(row[42]),
+                        email2 = row[42].toNotNULL(),
                         experienceBegin = if (row[43].equals("NULL")) { null } else LocalDate.parse(row[43])
                 )
                 humanDatabase.createHuman(human)

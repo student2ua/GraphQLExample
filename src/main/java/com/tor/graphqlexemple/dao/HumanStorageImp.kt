@@ -3,7 +3,6 @@ package com.tor.graphqlexemple.dao
 import com.tor.graphqlexemple.model.Human
 import org.jetbrains.squash.connection.DatabaseConnection
 import org.jetbrains.squash.connection.transaction
-import org.jetbrains.squash.dialects.h2.H2Connection
 import org.jetbrains.squash.expressions.eq
 import org.jetbrains.squash.query.*
 import org.jetbrains.squash.results.ResultRow
@@ -26,27 +25,33 @@ fun ResultRow.toHuman() = Human(
         birthday = this[HumanEntity.birthday],
         brothersCount = this[HumanEntity.brothersCount],
         childrenCount = this[HumanEntity.childrenCount],
-        sportText = toNotNull(this[HumanEntity.sportText]),
-        amateurText = toNotNull(this[HumanEntity.amateurText]),
-        phone = toNotNull(this[HumanEntity.phone]),
+        sportText = this[HumanEntity.sportText].toNotNULL(),
+        amateurText = this[HumanEntity.amateurText].toNotNULL(),
+        phone = this[HumanEntity.phone].toNotNULL(),
         needHospice = this[HumanEntity.needHospice],
         isUkrainian = this[HumanEntity.isUkrainian],
-        email = toNotNull(this[HumanEntity.email]),
-        email2 = toNotNull(this[HumanEntity.email2]),
-        remark = toNotNull(this[HumanEntity.remark]),
+        email = this[HumanEntity.email].toNotNULL(),
+        email2 = this[HumanEntity.email2].toNotNULL(),
+        remark = this[HumanEntity.remark].toNotNULL(),
         isHumanDismissed = this[HumanEntity.isHumanDismissed],
-        personCodeU = toNotNull(this[HumanEntity.personCodeU]),
+        personCodeU = this[HumanEntity.personCodeU].toNotNULL(),
         idPerson = this[HumanEntity.idPerson]?.toInt(),
         experienceBegin = this[HumanEntity.experienceBegin]
 )
 
-fun toNotNull(s: String?): String = if (s == null || s.equals("NULL")) {
+/*fun toNotNull(s: String?): String = if (s == null || s.equals("NULL")) {
     ""
 } else {
     s
+}*/
+
+fun String?.toNotNULL(): String = if (this == null || this.equals("NULL")) {
+    ""
+} else {
+    this
 }
 
-class HumanStorageImp(val db: DatabaseConnection = H2Connection.createMemoryConnection()) : IHumanStorage {
+class HumanStorageImp(val db: DatabaseConnection) : IHumanStorage {
     override fun getHumanAll(size: Long) = db.transaction {
         from(HumanEntity)
                 .select()
@@ -60,7 +65,7 @@ class HumanStorageImp(val db: DatabaseConnection = H2Connection.createMemoryConn
     override fun createHuman(human: Human) = db.transaction {
         insertInto(HumanEntity).values {
             it[humanid] = human.id
-            it[identificationCode] = toNotNull(human.inn)
+            it[identificationCode] = human.inn.toNotNULL()// human.inn ?:""
             it[lastName] = human.lastName
             it[firstName] = human.firsName
             it[middleName] = human.middleName
